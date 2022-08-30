@@ -44,46 +44,47 @@ log_interval = 100
 """## 2. Load Data"""
 
 train_set = torchvision.datasets.FashionMNIST(
-  root = './data/FashionMNIST',
-  train = True,
-  download = True,
-  transform = transforms.Compose([
-      transforms.ToTensor()                                 
-  ]))
+    root='./data/FashionMNIST',
+    train=True,
+    download=True,
+    transform=transforms.Compose([
+        transforms.ToTensor()
+    ]))
 
 train_loader = torch.utils.data.DataLoader(train_set,
-                                     batch_size = batch_size_train,
-                                     shuffle=True)
+                                           batch_size=batch_size_train,
+                                           shuffle=True)
 
 train_set = torchvision.datasets.FashionMNIST(
-  root = './data/FashionMNIST',
-  train = False,
-  download = True,
-  transform = transforms.Compose([
-      transforms.ToTensor()                                 
-  ]))
+    root='./data/FashionMNIST',
+    train=False,
+    download=True,
+    transform=transforms.Compose([
+        transforms.ToTensor()
+    ]))
 
 test_loader = torch.utils.data.DataLoader(train_set,
-                                     batch_size = batch_size_train,
-                                     shuffle=True)
+                                          batch_size=batch_size_train,
+                                          shuffle=True)
 
 examples = enumerate(test_loader)
 batch_idx, (example_data, example_targets) = next(examples)
 
 fig = plt.figure()
 for i in range(6):
-  plt.subplot(2,3,i+1)
-  plt.tight_layout()
-  plt.imshow(example_data[i][0], cmap='gray', interpolation='none')
-  plt.title("Ground Truth: {}".format(example_targets[i]))
-  plt.xticks([])
-  plt.yticks([])
+    plt.subplot(2, 3, i + 1)
+    plt.tight_layout()
+    plt.imshow(example_data[i][0], cmap='gray', interpolation='none')
+    plt.title("Ground Truth: {}".format(example_targets[i]))
+    plt.xticks([])
+    plt.yticks([])
 
 INPUT_CHANNELS = example_data.shape[1]
 OUTPUT_CLASSES = 10
 example_data.shape
 
 """## 3. Define Model"""
+
 
 class Net(nn.Module):
     def __init__(self):
@@ -95,6 +96,7 @@ class Net(nn.Module):
         output = F.log_softmax(x, dim=1)
         return output
 
+
 net = Net().to(device)
 net
 
@@ -103,10 +105,11 @@ net
 train_losses = []
 train_counter = []
 test_losses = []
-test_counter = [i*len(train_loader.dataset) for i in range(n_epochs + 1)]
+test_counter = [i * len(train_loader.dataset) for i in range(n_epochs + 1)]
 
 optimizer = optim.SGD(net.parameters(), lr=learning_rate, momentum=momentum)
 criterion = nn.MSELoss()
+
 
 def train(model, train_loader, optimizer, epoch):
     model.train()
@@ -121,7 +124,7 @@ def train(model, train_loader, optimizer, epoch):
         if batch_idx % log_interval == 0:
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(data), len(train_loader.dataset),
-                100. * batch_idx / len(train_loader), loss.item()))
+                       100. * batch_idx / len(train_loader), loss.item()))
 
 
 def test(model, test_loader):
@@ -143,9 +146,10 @@ def test(model, test_loader):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
+
 for epoch in range(1, n_epochs + 1):
-  train(net, train_loader, optimizer, epoch)
-  test(net, test_loader)
+    train(net, train_loader, optimizer, epoch)
+    test(net, test_loader)
 
 """# Tensorflow
 
@@ -174,9 +178,11 @@ learning_rate = 0.01
     with_info=True,
 )
 
+
 def normalize_img(image, label):
-  """Normalizes images: `uint8` -> `float32`."""
-  return tf.cast(image, tf.float32) / 255., label
+    """Normalizes images: `uint8` -> `float32`."""
+    return tf.cast(image, tf.float32) / 255., label
+
 
 ds_train = ds_train.map(
     normalize_img, num_parallel_calls=tf.data.AUTOTUNE)
@@ -194,7 +200,7 @@ ds_test = ds_test.prefetch(tf.data.AUTOTUNE)
 """## 3. Define Model"""
 
 model = tf.keras.models.Sequential([
-  ## Your architecture goes here
+    ## Your architecture goes here
 ])
 
 model.compile(
